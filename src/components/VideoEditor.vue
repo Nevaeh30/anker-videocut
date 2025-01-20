@@ -2,6 +2,12 @@
   <div class="video-editor">
     <div class="header flex justify-between items-center mb-4">
       <div class="flex items-center gap-4">
+        <button 
+          class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+          @click="$refs.fileInput.click()"
+        >
+          上传视频
+        </button>
         <span v-if="currentFile">当前文件: {{ currentFile }}</span>
       </div>
       <div class="flex gap-2">
@@ -69,6 +75,13 @@
       >
         批量截取
       </button>
+      <button 
+        class="bg-green-500 text-white px-4 py-1 rounded"
+        @click="captureCurrentFrame"
+        :disabled="!videoUrl"
+      >
+        截取当前帧
+      </button>
     </div>
 
     <!-- 缩略图预览区 -->
@@ -113,15 +126,23 @@
       </div>
     </div>
 
-    <!-- 批量下载按钮 -->
+    <!-- 批量操作按钮 -->
     <div v-if="selectedFrames.length > 0" class="fixed bottom-4 right-4 bg-white p-4 rounded-lg shadow-lg">
       <div class="text-sm mb-2">已选择 {{ selectedFrames.length }} 帧</div>
-      <button 
-        @click="downloadSelectedFrames"
-        class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-      >
-        下载选中帧
-      </button>
+      <div class="flex gap-2">
+        <button 
+          @click="downloadSelectedFrames"
+          class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+        >
+          下载选中帧
+        </button>
+        <button 
+          @click="deleteSelectedFrames"
+          class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+        >
+          删除选中帧
+        </button>
+      </div>
     </div>
   </div>
 </template>
@@ -302,11 +323,38 @@ const downloadSelectedFrames = () => {
   })
 }
 
+// 截取当前帧
+const captureCurrentFrame = () => {
+  if (!videoRef.value) return
+  captureFrame(videoRef.value.currentTime)
+}
+
+// 删除选中的帧
+const deleteSelectedFrames = () => {
+  capturedFrames.value = capturedFrames.value.filter(
+    frame => !selectedFrames.value.includes(frame)
+  )
+  selectedFrames.value = []
+  previewFrame.value = null
+}
+
+// 修改handleFrameClick函数，添加Delete键删除功能
+onMounted(() => {
+  window.addEventListener('keydown', handleKeyDown)
+})
+
 onUnmounted(() => {
+  window.removeEventListener('keydown', handleKeyDown)
   if (videoUrl.value) {
     URL.revokeObjectURL(videoUrl.value)
   }
 })
+
+const handleKeyDown = (event) => {
+  if (event.key === 'Delete' && selectedFrames.value.length > 0) {
+    deleteSelectedFrames()
+  }
+}
 </script>
 
 <style scoped>
