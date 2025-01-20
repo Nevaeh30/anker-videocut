@@ -1,6 +1,16 @@
 <template>
-  <router-view></router-view>
+  <div>
+    <VideoEditor />
+  </div>
 </template>
 
-<script setup>
+<script>
+import VideoEditor from './components/VideoEditor.vue'
+
+export default {
+  name: 'App',
+  components: {
+    VideoEditor
+  }
+}
 </script> 
