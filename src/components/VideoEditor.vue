@@ -21,15 +21,16 @@
       class="video-container bg-gray-100 rounded-lg overflow-hidden mb-4 relative"
       @click="!videoUrl && $refs.fileInput.click()"
     >
-      <video 
-        v-if="videoUrl"
-        ref="videoRef"
-        :src="videoUrl"
-        class="w-full"
-        @loadedmetadata="handleVideoLoaded"
-        @timeupdate="handleTimeUpdate"
-        controls
-      ></video>
+      <div v-if="videoUrl" class="flex justify-center">
+        <video 
+          ref="videoRef"
+          :src="videoUrl"
+          class="max-h-[70vh] w-auto"
+          @loadedmetadata="handleVideoLoaded"
+          @timeupdate="handleTimeUpdate"
+          controls
+        ></video>
+      </div>
       <div 
         v-else 
         class="flex items-center justify-center h-64 text-gray-500 cursor-pointer"
@@ -362,6 +363,12 @@ const handleKeyDown = (event) => {
   max-width: 1200px;
   margin: 0 auto;
   padding: 20px;
+}
+
+/* 视频容器样式 */
+.video-container {
+  min-height: 200px;
+  background: #f8f8f8;
 }
 
 .thumbnail-item {
