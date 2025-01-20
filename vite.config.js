@@ -13,5 +13,8 @@ export default defineConfig({
       'top-level-await': true
     }
   },
-  base: '/anker-videocut/'
+  base: '/anker-videocut/',
+  build: {
+    outDir: 'dist'
+  }
 }) 
