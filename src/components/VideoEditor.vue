@@ -146,8 +146,23 @@ const previewFrame = ref(null)
 const handleFileUpload = (event) => {
   const file = event.target.files[0]
   if (file) {
+    // 如果之前有视频URL，先清理掉
+    if (videoUrl.value) {
+      URL.revokeObjectURL(videoUrl.value)
+    }
+    
+    // 重置相关状态
+    capturedFrames.value = []
+    selectedFrames.value = []
+    previewFrame.value = null
+    timePoints.value = ''
+    
+    // 创建新的视频URL
     videoUrl.value = URL.createObjectURL(file)
     currentFile.value = file.name
+    
+    // 重置文件输入框，这样相同文件也能触发change事件
+    event.target.value = ''
   }
 }
 
